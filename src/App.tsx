@@ -8,8 +8,11 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Escreva seu nome aqui embaixo:
         </p>
+        <input type='text' placeholder='Nome'></input> <br />
+        <input type="number" /> <br />
+        <textarea name="" id=""></textarea>
         <a
           className="App-link"
           href="https://reactjs.org"
