@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Routes as Switch, Route } from "react-router-dom"
 import { DashBoard } from "../pages"
-import {Form} from "../pages"
+import {Login} from "../pages"
 
 export const Routes = () => {
     return (
@@ -8,7 +8,7 @@ export const Routes = () => {
             <Switch>
                 <Route path="/pagina-inicial" Component={DashBoard}></Route>
 
-                <Route path="*" Component={() => <Form></Form>}></Route>
+                <Route path="/entrar" Component={() => <Login></Login>}></Route>
             </Switch>
         </BrowserRouter>
     )
