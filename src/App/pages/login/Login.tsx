@@ -28,6 +28,7 @@ export const Login = () => {
         }
         
     }, [senha.length]) 
+    
     const handleEntrar = useCallback(() => {
         console.log(email);
         console.log(senha);
