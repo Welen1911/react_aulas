@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { isSet } from "util/types";
+import { InputLogin } from "./components/InputLogin";
 let cont = 0;
 export const Login = () => {
     const history = useNavigate();
@@ -43,17 +44,25 @@ export const Login = () => {
         }
     }, []);
     return (
-    <div id="div">
-        <form action="">
-        <p>{SenhaLenght}</p>
-        <label>
-            <span>Email:</span>
-            <input type="email" value={email} onKeyDown={e => e.key === "Enter"? inputSenhaRef.current?.focus() : false} ref={inputEmailRef} onChange={e => setEmail(e.target.value)}/>
-        </label><br /><br />
-        <label>
-            <span>Senha:</span>
-            <input type="password"  ref={inputSenhaRef} onKeyDown={e => e.key === "Enter" ? buttonEntrarRef.current?.click() : null} value={senha} onChange={e => setSenha(e.target.value)}/>
-        </label> 
+        
+        <div>
+        <form>
+        <InputLogin
+            label="E-mail"
+            value={email}
+            type="email"
+            onChange={newValue => setEmail(newValue)}
+            onPressEnter={() => inputSenhaRef.current?.focus()}
+            ref={inputEmailRef}
+        ></InputLogin>
+        <InputLogin
+        label="Senha"
+        value={senha}
+        type="password"
+        onChange={newValue => setSenha(newValue)}
+        onPressEnter={() => buttonEntrarRef.current?.focus()}
+        ref={inputSenhaRef}    
+        ></InputLogin>
         <button type="button" ref={buttonEntrarRef} onClick={handleEntrar}>entrar</button>
         </form>
     </div>
