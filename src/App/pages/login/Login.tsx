@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { isSet } from "util/types";
-
+let cont = 0;
 export const Login = () => {
     const history = useNavigate();
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState(""); 
     
+    
+    const inputEmailRef = useRef<HTMLInputElement>(null);
+    const inputSenhaRef = useRef<HTMLInputElement>(null);
+    const buttonEntrarRef = useRef<HTMLButtonElement>(null);
+
     useEffect(() => {
        console.log(email);
     }, [email]);
@@ -15,38 +20,42 @@ export const Login = () => {
         console.log(senha);
      }, [senha]);
     
-    
-    const handleEntrar = () => { 
-
-        let h1 = document.createElement("h1");
-        h1.innerHTML = `O seu E-mail é ${email}`;
-        h1.id = "h1";
-        document.getElementById("div")?.appendChild(h1);
-
-        let h2 = document.createElement("h2");
-        h2.innerHTML = "A sua senha é "+senha;
-        h2.id = "h2";
-        document.getElementById("div")?.appendChild(h2);
+    const SenhaLenght = useMemo(() => {
+        if (senha.length >= 6) {
+            return "Senha aceita!";
+        } else {
+            return "Senha menor que 6 dígitos, não aceita!";
+        }
         
-        h1.innerHTML = `O seu E-mail é ${email}`;
-        h2.innerHTML = "A sua senha é "+senha;
-       
-    //  history("/pagina-inicial");
-    }
+    }, [senha.length]) 
+    const handleEntrar = useCallback(() => {
+        console.log(email);
+        console.log(senha);
+        if (inputEmailRef.current != null && inputSenhaRef.current != null && buttonEntrarRef.current != null) {
+            inputEmailRef.current.placeholder = "E-mail";
+            inputSenhaRef.current.placeholder = "Senha";
+            buttonEntrarRef.current.style.marginLeft = "10px";
+            buttonEntrarRef.current.style.borderRadius = "10px";
+            buttonEntrarRef.current.style.backgroundColor = "#1C1C1C";
+            buttonEntrarRef.current.style.color = "white";
+            
+        }
+    }, []);
     return (
-        <div id="div">
-          <form action="">
-            <label>
-                <span>Email:</span>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)}/>
-            </label><br /><br />
-            <label>
-                <span>Senha:</span>
-                <input type="password"  value={senha} onChange={e => setSenha(e.target.value)}/>
-            </label> 
-            <button type="button" onClick={handleEntrar}>entrar</button>
-          </form>
-        </div>
+    <div id="div">
+        <form action="">
+        <p>{SenhaLenght}</p>
+        <label>
+            <span>Email:</span>
+            <input type="email" value={email} onKeyDown={e => e.key === "Enter"? inputSenhaRef.current?.focus() : false} ref={inputEmailRef} onChange={e => setEmail(e.target.value)}/>
+        </label><br /><br />
+        <label>
+            <span>Senha:</span>
+            <input type="password"  ref={inputSenhaRef} onKeyDown={e => e.key === "Enter" ? buttonEntrarRef.current?.click() : null} value={senha} onChange={e => setSenha(e.target.value)}/>
+        </label> 
+        <button type="button" ref={buttonEntrarRef} onClick={handleEntrar}>entrar</button>
+        </form>
+    </div>
         
     )
 }
