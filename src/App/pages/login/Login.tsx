@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { isSet } from "util/types";
 import { InputLogin } from "./components/InputLogin";
+import { ButtonLogin } from "./components/ButtonLogin";
 let cont = 0;
 export const Login = () => {
     const history = useNavigate();
@@ -63,7 +64,12 @@ export const Login = () => {
         onPressEnter={() => buttonEntrarRef.current?.focus()}
         ref={inputSenhaRef}    
         ></InputLogin>
-        <button type="button" ref={buttonEntrarRef} onClick={handleEntrar}>entrar</button>
+        {/* <button type="button" ref={buttonEntrarRef} onClick={handleEntrar}>entrar</button> */}
+        
+        <ButtonLogin 
+            type="button"
+            onclick={handleEntrar}
+        >Entrar</ButtonLogin>
         </form>
     </div>
         
