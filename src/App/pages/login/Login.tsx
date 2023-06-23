@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { isSet } from "util/types";
 import { InputLogin } from "./components/InputLogin";
 import { ButtonLogin } from "./components/ButtonLogin";
+import { useUsuarioLogado } from "../../shared/hooks";
 let cont = 0;
 export const Login = () => {
     const history = useNavigate();
@@ -31,23 +32,19 @@ export const Login = () => {
         
     }, [senha.length]) 
     
+    const {nome} = useUsuarioLogado();
+
     const handleEntrar = useCallback(() => {
         console.log(email);
         console.log(senha);
-        if (inputEmailRef.current != null && inputSenhaRef.current != null && buttonEntrarRef.current != null) {
-            inputEmailRef.current.placeholder = "E-mail";
-            inputSenhaRef.current.placeholder = "Senha";
-            buttonEntrarRef.current.style.marginLeft = "10px";
-            buttonEntrarRef.current.style.borderRadius = "10px";
-            buttonEntrarRef.current.style.backgroundColor = "#1C1C1C";
-            buttonEntrarRef.current.style.color = "white";
-            
-        }
+        history("/pagina-inicial");
+        
     }, []);
     return (
         
         <div>
         <form>
+            <p>{nome}</p>
         <InputLogin
             label="E-mail"
             value={email}
