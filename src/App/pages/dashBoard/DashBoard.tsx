@@ -1,30 +1,45 @@
-import { Link, useNavigate } from "react-router-dom"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useUsuarioLogado } from "../../shared/hooks/UseUsuarioLogado";
-
+import { useCallback, useState } from "react";
 
 export const DashBoard = () => {
+    const [getLista, setLista] = useState<string[]>([]);
     
-    const history = useNavigate();
-    const contadorRef = useRef(1);
-    const timerRef = useRef<HTMLParagraphElement>(null)
-    const [contador, setContador] = useState(0);
-    
-    const {nome, logout} = useUsuarioLogado();
+    const handleInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+        if ( e.key == "Enter") {
+            if (e.currentTarget.value.trim().length === 0) return;
 
-    
+            const value = e.currentTarget.value;
+            e.currentTarget.value = "";
+
+            setLista((oldLista) => {
+                console.log(oldLista);
+                if (oldLista.includes(value)) return oldLista;
+                return [...oldLista, value];
+            })
+        }
+    }, [])
+
+    const handleLimparClick = useCallback(() => {
+        setLista((oldLista) => {
+            const limpar = oldLista.pop();
+            return [...oldLista];
+        });
+    }, [])
+
     return (
         <div>
-            <p ref={timerRef}></p>
-            <p>DashBoard</p>
-            <p>{nome}</p>
-            <p>Contador: {contador}</p>
-            <button onClick={() => {
-                setContador(contadorRef.current++);
-               
-            }}>Acrescentar</button>
-            <Link to="/entrar" >Login</Link>
-            <button onClick={logout}>logout</button>
+            <p>Lista</p>
+            <input type="text"
+            onKeyDown={handleInputKeyDown}
+            
+            />
+            <ul>
+                {getLista.map((value) => {
+                    return (
+                        <li key={value}>{value}</li>
+                    );
+                })}
+            </ul>
+            <button onClick={handleLimparClick}>Limpar</button>
         </div>
     )
 }
