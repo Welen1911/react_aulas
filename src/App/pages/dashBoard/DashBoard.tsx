@@ -1,7 +1,12 @@
 import { useCallback, useState } from "react";
 
+interface IListItem {
+    title: string;
+    isSelected: boolean;
+}
+
 export const DashBoard = () => {
-    const [getLista, setLista] = useState<string[]>([]);
+    const [getLista, setLista] = useState<IListItem[]>([]);
     
     const handleInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
         if ( e.key == "Enter") {
@@ -12,17 +17,15 @@ export const DashBoard = () => {
 
             setLista((oldLista) => {
                 console.log(oldLista);
-                if (oldLista.includes(value)) return oldLista;
-                return [...oldLista, value];
+                
+                if (oldLista.some((ListItem) => ListItem.title === value)) return oldLista;
+                
+                return [...oldLista, {
+                    title: value,
+                    isSelected: false
+                }];
             })
         }
-    }, [])
-
-    const handleLimparClick = useCallback(() => {
-        setLista((oldLista) => {
-            const limpar = oldLista.pop();
-            return [...oldLista];
-        });
     }, [])
 
     return (
@@ -32,14 +35,27 @@ export const DashBoard = () => {
             onKeyDown={handleInputKeyDown}
             
             />
+            <p>{getLista.filter((ListItem) => ListItem.isSelected).length}</p>
             <ul>
-                {getLista.map((value) => {
+                {getLista.map((ListItem) => {
                     return (
-                        <li key={value}>{value}</li>
+                        <li key={ListItem.title}><input checked={ListItem.isSelected} type="checkbox" onChange={() => {
+                            setLista(oldLista => {
+                                return oldLista.map(oldListItem => {
+                                    const newSelected = oldListItem.title === ListItem.title ? !oldListItem.isSelected : oldListItem.isSelected;
+                                    
+                                    return {
+                                        ...oldListItem, 
+                                        isSelected: newSelected
+                                    }
+                                
+                                })
+                                
+                            })
+                        }} />{ListItem.title}</li>
                     );
                 })}
             </ul>
-            <button onClick={handleLimparClick}>Limpar</button>
         </div>
     )
 }
