@@ -1,7 +1,7 @@
 import { Api } from "../ApiConfi"
 import { ApiException } from "../ErrorException";
 
-interface ITarefa {
+export interface ITarefa {
     id: number;
     title: string;
     isComplete: boolean;
@@ -36,6 +36,11 @@ const getById = async (id: number): Promise<ITarefa | ApiException> => {
 const updateById = async (id: number, dataCreate: ITarefa): Promise<ITarefa | ApiException> => {
     try {
         const { data } = await Api().put(`/tarefas/${id}`, dataCreate);
+        if (data.isComplete === false) {
+            data.isComplete = true;
+        } else if (data.isComplete === true) {
+            data.isComplete = false;
+        }
         return data;
     } catch (error: any) {
         return new ApiException(error.message || "Erro ao atualizar!");
@@ -51,10 +56,10 @@ const deleteById = async (id: number): Promise<undefined | ApiException> => {
 }
 
 
-export const TarefaService = () => {
-    create;
-    getAll;
-    getById;
-    updateById;
-    deleteById;
+export const TarefaConstService =  {
+    create,
+    getAll,
+    getById,
+    updateById,
+    deleteById
 }
