@@ -36,9 +36,9 @@ const getById = async (id: number): Promise<ITarefa | ApiException> => {
 const updateById = async (id: number, dataCreate: ITarefa): Promise<ITarefa | ApiException> => {
     try {
         const { data } = await Api().put(`/tarefas/${id}`, dataCreate);
-        if (data.isComplete === false) {
+        if (!data.isComplete) {
             data.isComplete = true;
-        } else if (data.isComplete === true) {
+        } else {
             data.isComplete = false;
         }
         return data;

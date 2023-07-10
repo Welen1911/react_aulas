@@ -20,6 +20,10 @@ export const DashBoard = () => {
             if (e.currentTarget.value.trim().length === 0) return;
             
             const value = e.currentTarget.value;
+            e.currentTarget.value = "";
+
+            if (getLista.some((ListItem) => ListItem.title === value)) return ;
+
             const tarefa: Omit<ITarefa, "id"> = {
                 title: value,
                 isComplete: false,
@@ -28,24 +32,17 @@ export const DashBoard = () => {
             TarefaConstService.create(tarefa).then((result) => {
                 if (result instanceof ApiException) {
                     alert(result.message);
+                } else {
+                    setLista((oldLista) => {
+                        console.log(oldLista);
+                        
+                        
+                        return [...oldLista, result];
+                    })
                 }
             });
-            
-            e.currentTarget.value = "";
-
-            setLista((oldLista) => {
-                console.log(oldLista);
-                
-                if (oldLista.some((ListItem) => ListItem.title === value)) return oldLista;
-                
-                return [...oldLista, {
-                    id: oldLista.length,
-                    title: value,
-                    isComplete: false
-                }];
-            })
         }
-    }, [])
+    }, [getLista])
 
     return (
         <div>
@@ -59,25 +56,26 @@ export const DashBoard = () => {
                 {getLista.map((ListItem) => {
                     return (
                         <li key={ListItem.id}><input checked={ListItem.isComplete} type="checkbox" onChange={() => {
-                            
-                            TarefaConstService.updateById(ListItem.id,ListItem).then((result) => {
-                                if (result instanceof ApiException) {
-                                    alert(result.message);
-                                }
-                                });
 
                             setLista(oldLista => {
                                 return oldLista.map(oldListItem => {
+                                    TarefaConstService.updateById(oldListItem.id,oldListItem).then((result) => {
+                                        if (result instanceof ApiException) {
+                                            alert(result.message);
+                                        }
+                                        }); 
                                     const newSelected = oldListItem.title === ListItem.title ? !oldListItem.isComplete : oldListItem.isComplete;
-                                    
+   
                                     return {
                                         ...oldListItem, 
                                         isComplete: newSelected
                                     }
-                                
+                                    
                                 })
                                 
+                                
                             })
+                           
                         }} />{ListItem.title}</li>
                     );
                 })}
