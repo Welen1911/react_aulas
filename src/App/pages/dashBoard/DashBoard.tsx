@@ -44,6 +44,50 @@ export const DashBoard = () => {
         }
     }, [getLista])
 
+    const hadleToggleComplete = useCallback((id: number) => {
+        
+        const tarefaUpdate = getLista.find((tarefa) => tarefa.id == id);
+        if (!tarefaUpdate) return ;
+
+        TarefaConstService.updateById(id, {
+            ...tarefaUpdate,
+            isComplete: !tarefaUpdate.isComplete
+        }).then((result) => {
+            if (result instanceof ApiException) {
+                alert(result.message);
+            } else {
+                setLista(oldLista => {
+                    return oldLista.map(oldListItem => {
+                        if (oldListItem.id == id) return result;
+        
+                        return oldListItem;
+                        
+                    })
+                    
+                    
+                })
+            }
+        })
+        
+        
+        
+        
+    }, [getLista]);
+
+    const handleDelete = useCallback((id: number) => {
+        const tarefaDelete = getLista.find(tarefa => tarefa.id == id);
+        if (!tarefaDelete) return;
+
+        TarefaConstService.deleteById(id).then((result) => {
+            if (result instanceof ApiException) {
+                alert(result.message);
+            } else {
+                setLista(oldLista => {
+                    return oldLista.filter(oldListItem => oldListItem.id != id);
+                    })
+                }
+            })
+        }, [getLista])
     return (
         <div>
             <p>Lista</p>
@@ -55,28 +99,12 @@ export const DashBoard = () => {
             <ul>
                 {getLista.map((ListItem) => {
                     return (
-                        <li key={ListItem.id}><input checked={ListItem.isComplete} type="checkbox" onChange={() => {
+                        <li key={ListItem.id}><input checked={ListItem.isComplete} type="checkbox" 
+                        onChange={() => {
 
-                            setLista(oldLista => {
-                                return oldLista.map(oldListItem => {
-                                    TarefaConstService.updateById(oldListItem.id,oldListItem).then((result) => {
-                                        if (result instanceof ApiException) {
-                                            alert(result.message);
-                                        }
-                                        }); 
-                                    const newSelected = oldListItem.title === ListItem.title ? !oldListItem.isComplete : oldListItem.isComplete;
-   
-                                    return {
-                                        ...oldListItem, 
-                                        isComplete: newSelected
-                                    }
-                                    
-                                })
-                                
-                                
-                            })
+                            hadleToggleComplete(ListItem.id);
                            
-                        }} />{ListItem.title}</li>
+                        }} />{ListItem.title}  <button onClick={() => handleDelete(ListItem.id)}>Excluir</button></li>
                     );
                 })}
             </ul>
